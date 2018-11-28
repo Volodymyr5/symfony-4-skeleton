@@ -10,6 +10,7 @@ use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -47,7 +48,7 @@ class GoogleAuthenticator extends SocialAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->getPathInfo() == '/connect/google/check' &&$request->isMethod('GET');
+        return $request->attributes->get('_route') === 'connect_google_check' && $request->isMethod('GET');
     }
 
     /**
@@ -67,24 +68,31 @@ class GoogleAuthenticator extends SocialAuthenticator
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         /** @var GoogleUser $googleUser */
-        $googleUser = $this->getGoogleClient()
-            ->fetchUserFromToken($credentials);
+        $googleUser = $this->getGoogleClient()->fetchUserFromToken($credentials);
 
         $email = $googleUser->getEmail();
 
-        $user = $this->entityManager->getRepository('App:User')
-            ->findOneBy(['email' => $email]);
+        $user = $this->entityManager->getRepository('App:User')->findOneBy(['email' => $email]);
 
-        if (!$user) {
-            $user = new User();
-            $userPersonalData = new UserPersonalData();
+        if (!$user || ($user->getPresonalData() && !$user->getPresonalData()->getGpId())) {
+            if (!$user) {
+                $user = new User();
+                $userPersonalData = new UserPersonalData();
+            } else {
+                $userPersonalData = $user->getPresonalData();
+            }
 
             $userPersonalData->setGpId($googleUser->getId());
             $userPersonalData->setGpFirstname($googleUser->getFirstName());
             $userPersonalData->setGpLastname($googleUser->getLastName());
             $userPersonalData->setGpEmail($googleUser->getEmail());
-            $userPersonalData->setGpImage($googleUser->getAvatar());
-
+            if ($googleUser->getAvatar()) {
+                $path = $googleUser->getAvatar();
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                $userPersonalData->setGpImage($base64);
+            }
             $user->setEmail($googleUser->getEmail());
             $user->setCreatedAt(new \DateTime(date('Y-m-d H:i:s')));
             $user->setPresonalData($userPersonalData);
@@ -124,8 +132,7 @@ class GoogleAuthenticator extends SocialAuthenticator
      */
     private function getGoogleClient()
     {
-        return $this->clientRegistry
-            ->getClient('google');
+        return $this->clientRegistry->getClient('google');
     }
 
     /**
@@ -145,7 +152,9 @@ class GoogleAuthenticator extends SocialAuthenticator
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
         // TODO: Implement onAuthenticationFailure() method.
-        //return null;
+        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+
+        return new Response($message, Response::HTTP_FORBIDDEN);
     }
 
     /**
@@ -166,5 +175,6 @@ class GoogleAuthenticator extends SocialAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         // TODO: Implement onAuthenticationSuccess() method.
+        return null;
     }
 }

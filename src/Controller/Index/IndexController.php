@@ -2,8 +2,6 @@
 
 namespace App\Controller\Index;
 
-use App\Entity\User;
-use App\Entity\UserPersonalData;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
