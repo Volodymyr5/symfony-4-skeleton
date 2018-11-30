@@ -32,7 +32,7 @@ class GoogleAuthenticator extends CoreAuthentificator
 
         $email = $googleUser->getEmail();
 
-        $user = $this->entityManager->getRepository('App:User')->findOneBy(['email' => $email]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
         if (!$user) {
             $user = new User();

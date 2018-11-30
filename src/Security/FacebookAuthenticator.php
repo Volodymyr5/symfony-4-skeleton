@@ -27,7 +27,7 @@ class FacebookAuthenticator extends CoreAuthentificator
 
         $email = $facebookUser->getEmail();
 
-        $user = $this->entityManager->getRepository('App:User')->findOneBy(['email' => $email]);
+        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         if (!$user) {
             $user = new User();
             $userPersonalData = new UserPersonalData();
