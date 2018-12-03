@@ -106,6 +106,14 @@ class UserPersonalData
      */
     private $fb_max_age;
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'User Personal Data ID: ' . $this->id;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
