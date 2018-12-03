@@ -10,6 +10,7 @@
         "league/oauth2-facebook": "^2.0",
         "league/oauth2-google": "^2.2",
         "sensio/framework-extra-bundle": "^5.2",
+        "symfony/asset": "4.1.*",
         "symfony/console": "4.1.*",
         "symfony/expression-language": "4.1.*",
         "symfony/flex": "^1.1",
