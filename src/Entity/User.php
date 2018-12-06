@@ -35,7 +35,7 @@ class User implements UserInterface
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\UserPersonalData", cascade={"persist"})
      */
-    private $presonal_data;
+    private $personal_data;
 
     /**
      * @ORM\Column(type="datetime")
@@ -66,17 +66,17 @@ class User implements UserInterface
     /**
      * @return \App\Entity\UserPersonalData|null
      */
-    public function getPresonalData()
+    public function getPersonalData()
     {
-        return $this->presonal_data;
+        return $this->personal_data;
     }
 
     /**
-     * @param \App\Entity\UserPersonalData $presonal_data
+     * @param \App\Entity\UserPersonalData $personal_data
      */
-    public function setPresonalData($presonal_data): void
+    public function setPersonalData($personal_data): void
     {
-        $this->presonal_data = $presonal_data;
+        $this->personal_data = $personal_data;
     }
 
     /**

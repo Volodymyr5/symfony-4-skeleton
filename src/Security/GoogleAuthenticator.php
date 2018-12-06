@@ -38,7 +38,7 @@ class GoogleAuthenticator extends CoreAuthentificator
             $user = new User();
             $userPersonalData = new UserPersonalData();
         } else {
-            $userPersonalData = $user->getPresonalData();
+            $userPersonalData = $user->getPersonalData();
         }
 
         $userPersonalData->setGpId($googleUser->getId());
@@ -55,7 +55,7 @@ class GoogleAuthenticator extends CoreAuthentificator
 
         $user->setEmail($googleUser->getEmail());
         $user->setCreatedAt(new \DateTime(date('Y-m-d H:i:s')));
-        $user->setPresonalData($userPersonalData);
+        $user->setPersonalData($userPersonalData);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

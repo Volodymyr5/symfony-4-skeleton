@@ -1,8 +1,53 @@
 easy_admin:
+    formats:
+        date:     'd.m.Y'
+        time:     'H:i:s'
+        datetime: 'H:i:s d.m.Y'
     site_name: 'Skeleton'
     entities:
 #        # List the entity class name you want to manage
 #        - App\Entity\Product
 #        - App\Entity\Category
+        Tags:
+            class: App\Entity\Tags
+            label: 'Tags'
+            list:
+                title: "Most recent tags"
+                fields:
+                - 'id'
+                - { property: 'slug', label: 'Slug' }
+                - 'name'
         User:
             class: App\Entity\User
+            label: 'User'
+            list:
+                title: "Most recent tags"
+                fields:
+                - 'id'
+                - { property: 'email', type: 'email' }
+                - 'created_at'
+                - { property: 'personal_data.fb_image', type: 'blob' }
+
+            templates:
+                edit: 'easy_admin/entities/user/templates/edit.html.twig'
+
+    design:
+        brand_color: 'red'
+
+        # the value of this option can be any valid CSS color
+#        brand_color: 'red'
+#        brand_color: 'rgba(26, 188, 156, 0.85)'
+#
+#        # if the color includes a '%', you must double it to escape it in the YAML file
+#        brand_color: 'hsl(0, 100%%, 50%%);'
+
+#        assets:
+            # all kinds of assets are supported and linked accordingly
+#            css:
+#                - '//example.org/css/admin1.css'
+#            js:
+#                - '//example.org/js/admin1.js'
+        assets:
+            favicon:
+                path: '/assets/img/core-img/favicon.ico'
+                mime_type: 'image/x-icon'
